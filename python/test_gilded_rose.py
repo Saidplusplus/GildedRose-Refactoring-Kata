@@ -68,9 +68,12 @@ def test_update_quality_aged_brie_quality_increase():
 
 
 def test_update_quality_sulfuras_quality_never_decrease():
-    "'Sulfuras', being a legendary item, never has to be sold or decreases in Quality"
+    """
+        'Sulfuras', being a legendary item, never has to be sold or decreases in quality
+        "Sulfuras" is a legendary item and as such its Quality is 80 and it never alters.
+    """
 
-    initial_quality = 4
+    initial_quality = 80
     items = [
         Item("Sulfuras, Hand of Ragnaros", 10, initial_quality),
         Item("Sulfuras, Hand of Ragnaros", -1, initial_quality),
@@ -80,7 +83,7 @@ def test_update_quality_sulfuras_quality_never_decrease():
     gilded_rose.update_quality()
 
     for item in gilded_rose.items:
-        assert item.quality >= initial_quality
+        assert item.quality == initial_quality
 
 
 def test_update_quality_quality_backstage_when_sell_in_between_5_and_10():
@@ -129,3 +132,25 @@ def test_update_quality_quality_backstage_when_sell_in_negative():
 
     for item in gilded_rose.items:
         assert item.quality == 0
+
+
+def test_update_quality_conjured_item_degrad_twice_as_normal_item():
+    "'Conjured' items degrade in Quality twice as fast as normal items"
+
+    initial_quality = 40
+    sell_in = 5
+    items = [
+        Item("normal", sell_in, initial_quality),
+        Item("Conjured", sell_in, initial_quality),
+    ]
+
+    gilded_rose = GildedRose(items)
+    gilded_rose.update_quality()
+    
+    normal_item_quality_degraded_by = initial_quality - gilded_rose.items[0].quality
+    conjured_item_quality_degraded_by = initial_quality - gilded_rose.items[1].quality
+
+    assert conjured_item_quality_degraded_by == 2 * normal_item_quality_degraded_by
+
+
+

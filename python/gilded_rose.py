@@ -9,6 +9,7 @@ class ItemTypes(object):
     BRIE = "Aged Brie"
     BACKSTAGE = "Backstage passes to a TAFKAL80ETC concert"
     SULFURAS = "Sulfuras, Hand of Ragnaros"
+    CONJURED = "Conjured"
 
 
 def update_brie_item_quality(item):
@@ -21,13 +22,10 @@ def update_brie_item_quality(item):
 
 
 def update_sulfuras_item_quality(item):
-
-    # TODO: check specs again and simplify this function. This function does nothing !!
-    if item.quality > 0:
-        pass
-    if item.sell_in < 0:
-        if item.quality > 0:
-            pass
+    """
+        "Sulfuras" is a legendary item and as such its Quality is 80 and it never alters
+    """
+    ...
 
 
 def update_backstage_item_quality(item):
@@ -53,6 +51,15 @@ def update_normal_item_quality(item):
             item.quality = item.quality - 1
 
 
+def update_conjured_item_quality(item):
+    if item.quality > 0:
+        item.quality = item.quality - 2
+    item.sell_in = item.sell_in - 1
+    if item.sell_in < 0:
+        if item.quality > 0:
+            item.quality = item.quality - 2
+
+
 class GildedRose(object):
 
     def __init__(self, items):
@@ -66,6 +73,8 @@ class GildedRose(object):
                 update_backstage_item_quality(item)
             elif item.name == ItemTypes.SULFURAS:
                 update_sulfuras_item_quality(item)
+            elif item.name == ItemTypes.CONJURED:
+                update_conjured_item_quality(item)
             else:
                 update_normal_item_quality(item)
 
